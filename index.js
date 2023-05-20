@@ -51,6 +51,14 @@ async function run() {
       res.send(result);
     });
 
+    // get all toy a single user by email
+    app.get("/my-toys", async (req, res) => {
+      const result = await toyCarsCollection
+        .find({ sellerEmail: req.query.email })
+        .toArray();
+      res.send(result);
+    });
+
     // post a toy car
     app.post("/cars", async (req, res) => {
       const body = req.body;
