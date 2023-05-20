@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -40,6 +40,21 @@ async function run() {
       const result = await toyCarsCollection
         .find({ subcategory: targetCategory })
         .toArray();
+      res.send(result);
+    });
+
+    // get a single car for details
+    app.get("/cars/:id", async (req, res) => {
+      const result = await toyCarsCollection.findOne({
+        _id: new ObjectId(req.params.id),
+      });
+      res.send(result);
+    });
+
+    // post a toy car
+    app.post("/cars", async (req, res) => {
+      const body = req.body;
+      const result = await toyCarsCollection.insertOne(body);
       res.send(result);
     });
 
