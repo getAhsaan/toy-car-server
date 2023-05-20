@@ -58,6 +58,22 @@ async function run() {
       res.send(result);
     });
 
+    // update a car information
+    app.patch("/cars/:id", async (req, res) => {
+      const updateDoc = {
+        $set: {
+          price: req.body.price,
+          quantity: req.body.quantity,
+          description: req.body.description,
+        },
+      };
+      const result = await toyCarsCollection.updateOne(
+        { _id: new ObjectId(req.params.id) },
+        updateDoc
+      );
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
