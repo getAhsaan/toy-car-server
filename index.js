@@ -26,9 +26,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
+    const toyCarsCollection = client.db("carZoneDB").collection("toyCars");
 
+    // get all cars
+    app.get("/cars", async (req, res) => {
+      const result = await toyCarsCollection.find().limit(20).toArray();
+      res.send(result);
+    });
 
-    
+    // get cars by category
+    app.get("/categories/:cat", async (req, res) => {
+      const targetCategory = req.params.cat.split("-").join(" ");
+      const result = await toyCarsCollection
+        .find({ subcategory: targetCategory })
+        .toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
