@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3500;
 
 // middleware
 app.use(cors());
@@ -81,7 +81,7 @@ async function run() {
         sortTo = -1;
       }
       const result = await toyCarsCollection
-        .find({})
+        .find({sellerEmail: req.query.email})
         .sort({ price: sortTo })
         .toArray();
       res.send(result);
@@ -91,7 +91,7 @@ async function run() {
     app.get("/gallery-images", async (req, res) => {
       const result = await toyCarsCollection
         .find({}, { projection: { pictureUrl: 1 } })
-        .limit(9)
+        .limit(6)
         .toArray();
       res.send(result);
     });
