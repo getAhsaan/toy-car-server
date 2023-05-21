@@ -51,10 +51,47 @@ async function run() {
       res.send(result);
     });
 
-    // get all toy a single user by email
+    // get all toy car for a single user by email
     app.get("/my-toys", async (req, res) => {
       const result = await toyCarsCollection
         .find({ sellerEmail: req.query.email })
+        .toArray();
+      res.send(result);
+    });
+
+    // search
+    const result = await toyCarsCollection.createIndex(
+      { name: 1 },
+      { name: "toyCarsName" }
+    );
+
+    app.get("/search/:text", async (req, res) => {
+      const result = await toyCarsCollection
+        .find({ name: { $regex: req.params.text, $options: "i" } })
+        .toArray();
+      res.send(result);
+    });
+
+    // sort by price
+    app.get("/sort-car/:text", async (req, res) => {
+      let sortTo;
+      if (req.params.text === "low") {
+        sortTo = 1;
+      } else {
+        sortTo = -1;
+      }
+      const result = await toyCarsCollection
+        .find({})
+        .sort({ price: sortTo })
+        .toArray();
+      res.send(result);
+    });
+
+    // load gallery image
+    app.get("/gallery-images", async (req, res) => {
+      const result = await toyCarsCollection
+        .find({}, { projection: { pictureUrl: 1 } })
+        .limit(9)
         .toArray();
       res.send(result);
     });
